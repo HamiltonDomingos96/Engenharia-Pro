@@ -1,0 +1,6 @@
+{
+  "name": "Academia Pro Engenharia",
+  "description": "Plataforma educacional avançada de Engenharia Ambiental e Civil com trilhas interativas, simuladores práticos, exames comentados e IA Coach.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
