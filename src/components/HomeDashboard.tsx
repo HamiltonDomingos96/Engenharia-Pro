@@ -31,13 +31,16 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { COURSES_DATA } from '../data/coursesData';
-import { UserProgress } from '../types';
+import { UserAccount, UserProgress } from '../types';
 
 interface HomeDashboardProps {
   progress: UserProgress;
   onNavigateToModule: (moduleId: string) => void;
   onNavigateToTab: (tab: 'tracks' | 'exams' | 'stats' | 'tools') => void;
   onOpenCertificate: () => void;
+  currentUser?: UserAccount | null;
+  onOpenAuth?: (mode?: 'login' | 'register') => void;
+  onOpenAccountModal?: () => void;
 }
 
 // Technical encyclopedic compendium terms (A-Z)
@@ -144,7 +147,10 @@ export function HomeDashboard({
   progress,
   onNavigateToModule,
   onNavigateToTab,
-  onOpenCertificate
+  onOpenCertificate,
+  currentUser,
+  onOpenAuth,
+  onOpenAccountModal
 }: HomeDashboardProps) {
   // Search state
   const [searchTerm, setSearchTerm] = useState('');
@@ -227,16 +233,71 @@ export function HomeDashboard({
       <div className="space-y-1 mb-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#a2a9b1] pb-1">
           <h1 className="text-3xl sm:text-4xl font-serif text-black font-normal">
-            Tratado de Engenharia Ambiental e Engenharia Civil
+            Lopes Engenharia Book
           </h1>
           <span className="text-xs text-[#54595d] font-mono">
-            Edição Atualizada 2026 • Corpus Técnico
+            Edição Atualizada 2026 • Tratado Técnico Oficial
           </span>
         </div>
-        <p className="text-xs italic text-[#54595d]">
-          Origem: Wikipédia Técnica Pro Engenharia, a enciclopédia livre de formação intensiva de alta performance.
+        <p className="text-xs text-[#54595d] italic">
+          Origem: Lopes Engenharia Book — Enciclopédia Técnica e Manual Prático Livre.
         </p>
       </div>
+
+      {/* User Performance Safeguard Notice Banner */}
+      {!currentUser ? (
+        <div className="p-3 mb-4 bg-white border border-[#a2a9b1] border-l-4 border-l-[#72c332] text-xs text-[#202122] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-start gap-2.5">
+            <ShieldCheck className="w-5 h-5 text-[#4d861e] shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <strong className="text-black block text-xs">
+                Salvaguarda Oficial de Desempenho do Estudante
+              </strong>
+              <p className="text-[#54595d] text-[11px] leading-relaxed">
+                Você está em modo de leitura aberta. <strong>Cadastre-se ou inicie sessão</strong> para salvaguardar permanentemente seu progresso de leitura, resoluções de provas, notas de estudo e emissão de certificados oficiais com seu nome.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => onOpenAuth?.('register')}
+              className="px-3 py-1.5 bg-[#72c332] hover:bg-[#5ea832] text-black font-bold rounded text-xs transition-colors shadow-2xs flex items-center gap-1.5"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-black" />
+              <span>Criar Conta</span>
+            </button>
+            <button
+              onClick={() => onOpenAuth?.('login')}
+              className="px-3 py-1.5 bg-[#f8f9fa] hover:bg-[#eaecf0] border border-[#a2a9b1] text-black font-semibold rounded text-xs transition-colors"
+            >
+              Entrar
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="p-3 mb-4 bg-[#f2f9ed] border border-[#72c332] border-l-4 border-l-[#4d861e] text-xs text-[#202122] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-xs bg-black text-[#72c332] flex items-center justify-center font-bold text-xs shrink-0">
+              {currentUser.name.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <span className="text-black font-bold text-xs flex items-center gap-1.5">
+                Desempenho Salvaguardado: {currentUser.name}
+                <span className="w-2 h-2 rounded-full bg-[#72c332]" />
+              </span>
+              <p className="text-[#54595d] text-[11px]">
+                Conta oficial autenticada ({currentUser.email}) • Jurisdição ativa: {currentUser.jurisdiction} • Dados 100% salvos e sincronizados.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onOpenAccountModal}
+            className="px-3 py-1.5 bg-white hover:bg-[#f8f9fa] border border-[#a2a9b1] hover:border-black text-black font-bold rounded text-xs transition-colors shrink-0 shadow-2xs"
+          >
+            Gerenciar Salvaguarda & Backup
+          </button>
+        </div>
+      )}
 
       {/* Wikipedia Callout Notice Box in White, Black, Lettuce Green */}
       <div className="p-3 mb-6 bg-[#f2f9ed] border-l-4 border-[#72c332] text-xs text-[#202122] flex items-start gap-3 shadow-xs">
@@ -245,13 +306,14 @@ export function HomeDashboard({
         </div>
         <div className="space-y-1 leading-relaxed">
           <span className="font-bold text-black uppercase tracking-wide">
-            Programa de Formação Intensiva de Elite (Do Básico ao Profissional):
+            Lopes Engenharia Book — Formação Intensiva de Elite (Do Básico ao Profissional):
           </span>
           <p>
-            Este tratado reúne os fundamentos científicos, o cálculo estrutural no Estado Limite Último (ELU), a monitorização físico-química de poluentes, e o arcabouço normativo cruzado entre a <strong>República de Angola (Lei nº 5/98 e Decreto Presidencial nº 117/20)</strong>, <strong>Portugal (Eurocódigos EN 1990/EN 1992)</strong> e o <strong>Brasil (ABNT NBR 6118:2023)</strong>.
+            Este tratado técnico reúne os fundamentos científicos, o cálculo estrutural no Estado Limite Último (ELU), a monitorização físico-química de poluentes, e o arcabouço normativo cruzado entre a <strong>República de Angola (Lei nº 5/98 e Decreto Presidencial nº 117/20)</strong>, <strong>Portugal (Eurocódigos EN 1990/EN 1992)</strong> e o <strong>Brasil (ABNT NBR 6118:2023)</strong>.
           </p>
         </div>
       </div>
+
 
       {/* Main Grid: Left Column (Article, TOC, Syllabus) + Right Column (Wikipedia Infobox) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -262,7 +324,7 @@ export function HomeDashboard({
           {/* Article Introduction */}
           <div className="text-sm leading-relaxed text-[#202122] space-y-3">
             <p>
-              O <strong>Tratado de Engenharia Ambiental e Civil</strong> é um compêndio enciclopédico de formação acelerada estruturado em dois volumes primários complementares. No âmbito ambiental, a obra examina as variáveis físico-químicas de corpos receptores (demanda bioquímica de oxigênio DBO₅, DQO e oxigênio dissolvido)<sup>[1]</sup>, o controle de material particulado atmosférico (PM₁₀ e PM₂.₅)<sup>[2]</sup>, os Estudos de Impacto Ambiental (EIA) e a auditoria em conformidade com o ciclo PDCA da norma ISO 14001<sup>[3]</sup>.
+              O <strong>Lopes Engenharia Book</strong> é um compêndio enciclopédico e manual prático de formação acelerada estruturado em dois volumes primários complementares. No âmbito ambiental, a obra examina as variáveis físico-químicas de corpos receptores (demanda bioquímica de oxigênio DBO₅, DQO e oxigênio dissolvido)<sup>[1]</sup>, o controle de material particulado atmosférico (PM₁₀ e PM₂.₅)<sup>[2]</sup>, os Estudos de Impacto Ambiental (EIA) e a auditoria em conformidade com o ciclo PDCA da norma ISO 14001<sup>[3]</sup>.
             </p>
             <p>
               No campo da engenharia estrutural e de infraestruturas, a enciclopédia aborda a interpretação técnica de pranchas de armaduras, o dimensionamento à flexão simples de vigas de betão armado, o controle orçamentário por meio do BDI e Curva ABC 80/20<sup>[4]</sup>, e a fiscalização de avanço físico-financeiro baseada no <em>Earned Value Management</em> (EVM)<sup>[5]</sup>.
@@ -662,23 +724,28 @@ export function HomeDashboard({
             {/* Infobox Title */}
             <div className="bg-[#eaecf0] border-b border-[#a2a9b1] -m-3 p-2.5 text-center mb-3">
               <span className="font-serif font-bold text-sm text-black block">
-                Tratado de Engenharia
+                Lopes Engenharia Book
               </span>
               <span className="text-[10px] text-[#54595d] uppercase tracking-wider font-mono">
-                Corpus Curricular Técnico
+                Manual & Enciclopédia Técnica
               </span>
             </div>
 
             {/* Emblem in Black, White, Lettuce Green */}
-            <div className="w-24 h-24 rounded-full bg-white border-2 border-[#72c332] text-black flex items-center justify-center font-serif font-bold text-4xl mx-auto shadow-inner">
-              Ω
+            <div className="w-20 h-20 rounded-full bg-white border-2 border-[#72c332] text-black flex items-center justify-center font-serif font-bold text-2xl mx-auto shadow-inner">
+              LEB
             </div>
             <span className="text-[10px] text-center text-[#54595d] block italic">
-              Emblema oficial da formação intensiva
+              Insígnia oficial do tratado de engenharia
             </span>
 
             {/* Infobox Table */}
             <div className="border-t border-[#eaecf0] pt-2 space-y-2">
+              <div className="flex justify-between py-1 border-b border-[#eaecf0]">
+                <span className="font-bold text-[#54595d]">Obra</span>
+                <span className="text-right text-black font-semibold">Lopes Engenharia Book</span>
+              </div>
+
               <div className="flex justify-between py-1 border-b border-[#eaecf0]">
                 <span className="font-bold text-[#54595d]">Áreas de Estudo</span>
                 <span className="text-right text-black font-medium">Ambiental • Civil</span>

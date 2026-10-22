@@ -93,3 +93,21 @@ export interface AICoachAnalysis {
     completed: boolean;
   }[];
 }
+
+export interface UserAccount {
+  id: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+  role: string;
+  jurisdiction: 'Angola' | 'Portugal' | 'Brasil' | 'Global';
+  createdAt: string;
+  lastLoginAt: string;
+  progress: UserProgress;
+}
+
+export interface AuthState {
+  currentUser: UserAccount | null;
+  isAuthenticated: boolean;
+}
+

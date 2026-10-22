@@ -49,7 +49,7 @@ export function StatsAndAICoach({
     {
       id: 'msg-welcome',
       sender: 'ai',
-      text: `Olá! Sou o IA Mentor Técnico da Wikipédia de Engenharia. Analisei a sua matriz de aprendizagem: a formação intensiva está pronta para início no Volume I (Monitorização Ambiental) e Volume II (Leitura de Plantas e Estruturas). O que gostaria de calcular, consultar ou esclarecer sobre o corpus normativo agora?`,
+      text: `Olá! Sou o Mentor Técnico do Lopes Engenharia Book. Analisei a sua matriz de aprendizagem: a formação intensiva está pronta para início no Volume I (Monitorização Ambiental) e Volume II (Leitura de Plantas e Estruturas). O que gostaria de calcular, consultar ou esclarecer sobre o corpus normativo agora?`,
       timestamp: 'Hoje'
     }
   ]);
@@ -109,10 +109,10 @@ export function StatsAndAICoach({
   return (
     <div className="bg-white border border-[#a2a9b1] rounded-sm p-4 sm:p-8 max-w-[1380px] mx-auto text-[#202122] font-sans space-y-6">
       
-      {/* Wikipedia Section Header */}
+      {/* Section Header */}
       <div className="border-b border-[#a2a9b1] pb-3 space-y-1">
         <span className="text-[10px] font-mono uppercase text-[#54595d] font-bold block">
-          Wikipédia Técnica • Painel Analítico & Tutoria
+          Lopes Engenharia Book • Painel Analítico & Tutoria
         </span>
         <h1 className="text-2xl sm:text-3xl font-serif text-black font-normal">
           Métricas de Aprendizagem & IA Mentor de Engenharia

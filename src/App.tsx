@@ -7,8 +7,11 @@ import { StatsAndAICoach } from './components/StatsAndAICoach';
 import { EngineeringSimulators } from './components/EngineeringSimulators';
 import { StandardsComparator } from './components/StandardsComparator';
 import { CertificateModal } from './components/CertificateModal';
+import { AuthModal } from './components/AuthModal';
+import { UserAccountModal } from './components/UserAccountModal';
 import { INITIAL_USER_PROGRESS } from './data/initialData';
-import { QuizResult, UserProgress } from './types';
+import { QuizResult, UserAccount, UserProgress } from './types';
+import { getCurrentUser, saveUserProgress, logoutUser } from './utils/authStorage';
 import { 
   Wrench, 
   Globe, 
@@ -21,7 +24,10 @@ import {
   Cpu, 
   Layers,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
+  User,
+  ShieldCheck,
+  LogIn
 } from 'lucide-react';
 
 const STORAGE_KEY = 'academia_pro_engenharia_v3_enciclopedia_zero';
@@ -35,9 +41,19 @@ export default function App() {
   const [sessionMinutes, setSessionMinutes] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Clean legacy data and load fresh zeroed state
+  // Authentication & Account State
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(() => getCurrentUser());
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+
+  // Load progress for active user or clean zeroed guest state
   const [progress, setProgress] = useState<UserProgress>(() => {
     try {
+      const activeUser = getCurrentUser();
+      if (activeUser && activeUser.progress) {
+        return activeUser.progress;
+      }
       localStorage.removeItem('academia_pro_engenharia_progress_v1');
       localStorage.removeItem('academia_pro_engenharia_progress_v2');
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -50,14 +66,17 @@ export default function App() {
     return INITIAL_USER_PROGRESS;
   });
 
-  // Save progress changes to localStorage
+  // Save progress changes to user account (if logged in) and localStorage
   useEffect(() => {
     try {
+      if (currentUser) {
+        saveUserProgress(currentUser.id, progress);
+      }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
     } catch (e) {
       console.error('Error saving progress:', e);
     }
-  }, [progress]);
+  }, [progress, currentUser]);
 
   // Session timer increment every 60 seconds
   useEffect(() => {
@@ -120,11 +139,42 @@ export default function App() {
   const handleResetProgress = () => {
     if (window.confirm('Confirma que deseja zerar 100% dos dados da plataforma?')) {
       setProgress(INITIAL_USER_PROGRESS);
+      if (currentUser) {
+        saveUserProgress(currentUser.id, INITIAL_USER_PROGRESS);
+      }
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem('academia_pro_engenharia_progress_v1');
       localStorage.removeItem('academia_pro_engenharia_progress_v2');
       setSessionMinutes(0);
     }
+  };
+
+  const handleAuthSuccess = (user: UserAccount) => {
+    setCurrentUser(user);
+    if (user.progress) {
+      setProgress(user.progress);
+    }
+  };
+
+  const handleLogout = () => {
+    logoutUser();
+    setCurrentUser(null);
+    setIsAccountModalOpen(false);
+  };
+
+  const handleOpenAuth = (mode: 'login' | 'register' = 'login') => {
+    setAuthModalMode(mode);
+    setIsAuthModalOpen(true);
+    setIsSidebarOpen(false);
+  };
+
+  const handleResetUserProgress = () => {
+    setProgress(INITIAL_USER_PROGRESS);
+    if (currentUser) {
+      saveUserProgress(currentUser.id, INITIAL_USER_PROGRESS);
+    }
+    localStorage.removeItem(STORAGE_KEY);
+    setSessionMinutes(0);
   };
 
   return (
@@ -140,6 +190,9 @@ export default function App() {
         setSearchQuery={setSearchQuery}
         onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         isSidebarOpen={isSidebarOpen}
+        currentUser={currentUser}
+        onOpenAuth={handleOpenAuth}
+        onOpenAccountModal={() => setIsAccountModalOpen(true)}
       />
 
       {/* Main Container with Optional Wikipedia Left Drawer */}
@@ -150,9 +203,11 @@ export default function App() {
           <aside className="w-64 bg-white border border-[#a2a9b1] rounded-sm p-4 text-xs space-y-4 shrink-0 shadow-sm fixed md:static z-30 top-16 left-2 bottom-4 overflow-y-auto">
             <div className="space-y-1 pb-3 border-b border-[#eaecf0]">
               <span className="font-serif font-bold text-sm text-black block">
-                Navegação Wikipédia
+                Lopes Engenharia Book
               </span>
-              <p className="text-[11px] text-[#54595d]">Sumário e acessos rápidos</p>
+              <p className="text-[11px] text-[#54595d]">
+                Sumário e acessos rápidos
+              </p>
             </div>
 
             <div className="space-y-1">
@@ -213,6 +268,41 @@ export default function App() {
               </button>
             </div>
 
+            {/* Account & Safeguard Status in Sidebar */}
+            <div className="space-y-1.5 pt-2 border-t border-[#eaecf0]">
+              <span className="text-[10px] font-mono uppercase text-[#54595d] font-bold block">
+                Salvaguarda de Desempenho
+              </span>
+              {currentUser ? (
+                <div className="p-2 bg-[#f2f9ed] rounded border border-[#72c332] space-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-4 h-4 rounded-xs bg-black text-[#72c332] flex items-center justify-center font-bold text-[10px]">
+                      {currentUser.name.charAt(0).toUpperCase()}
+                    </span>
+                    <strong className="text-black text-[11px] truncate">{currentUser.name}</strong>
+                  </div>
+                  <button
+                    onClick={() => { setIsAccountModalOpen(true); setIsSidebarOpen(false); }}
+                    className="w-full text-center py-1 bg-white hover:bg-[#eaecf0] border border-[#a2a9b1] text-black text-[10px] font-bold rounded transition-colors"
+                  >
+                    Painel da Conta & Backup
+                  </button>
+                </div>
+              ) : (
+                <div className="p-2 bg-[#f8f9fa] rounded border border-[#eaecf0] space-y-1.5">
+                  <span className="text-[10px] text-[#54595d] block leading-tight">
+                    Modo visitante: cadastre-se para salvaguardar notas e módulos.
+                  </span>
+                  <button
+                    onClick={() => handleOpenAuth('register')}
+                    className="w-full text-center py-1 bg-[#72c332] hover:bg-[#5ea832] text-black text-[10px] font-bold rounded transition-colors"
+                  >
+                    Criar Conta Grátis
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className="space-y-1.5 pt-2 border-t border-[#eaecf0]">
               <button
                 onClick={() => setIsCertificateOpen(true)}
@@ -239,8 +329,12 @@ export default function App() {
               onNavigateToModule={handleNavigateToModule}
               onNavigateToTab={setCurrentTab}
               onOpenCertificate={() => setIsCertificateOpen(true)}
+              currentUser={currentUser}
+              onOpenAuth={handleOpenAuth}
+              onOpenAccountModal={() => setIsAccountModalOpen(true)}
             />
           )}
+
 
           {currentTab === 'tracks' && (
             <LearningTracks
@@ -311,9 +405,13 @@ export default function App() {
       <footer className="border-t border-[#a2a9b1] bg-white py-6 text-xs text-[#54595d] no-print mt-8">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-serif font-bold text-black">Wikipédia Técnica de Engenharia</span>
+            <span className="font-serif font-bold text-black">Lopes Engenharia Book</span>
             <span>•</span>
-            <span>Tratado de Formação Intensiva (Volume I: Ambiental & Volume II: Civil)</span>
+            <span className="text-[#202122]">
+              Idealizado e desenvolvido por <strong className="text-black">Hamilton Domingos (H-Digital)</strong>
+            </span>
+            <span className="hidden md:inline">•</span>
+            <span className="hidden md:inline">Tratado Técnico Oficial (Volume I: Ambiental & Volume II: Civil)</span>
           </div>
 
           <div className="flex items-center gap-3 font-mono text-[11px]">
@@ -333,8 +431,35 @@ export default function App() {
       {/* Certificate Modal */}
       {isCertificateOpen && (
         <CertificateModal
-          progress={progress}
+          progress={{
+            ...progress,
+            studentName: currentUser?.name || progress.studentName || ''
+          }}
           onClose={() => setIsCertificateOpen(false)}
+        />
+      )}
+
+      {/* Auth Modal (Login / Register / Restore) */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onAuthSuccess={handleAuthSuccess}
+        initialMode={authModalMode}
+        currentProgress={progress}
+      />
+
+      {/* User Account & Performance Safeguard Modal */}
+      {currentUser && (
+        <UserAccountModal
+          isOpen={isAccountModalOpen}
+          onClose={() => setIsAccountModalOpen(false)}
+          currentUser={currentUser}
+          onLogout={handleLogout}
+          onUpdateUser={(updated) => {
+            setCurrentUser(updated);
+            setProgress(updated.progress);
+          }}
+          onResetProgress={handleResetUserProgress}
         />
       )}
     </div>

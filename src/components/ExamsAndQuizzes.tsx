@@ -137,7 +137,7 @@ export function ExamsAndQuizzes({
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <div>
             <span className="text-[10px] font-mono uppercase text-[#54595d] font-bold block">
-              Wikipédia Técnica • Avaliação do Tratado
+              Lopes Engenharia Book • Avaliação do Tratado
             </span>
             <h1 className="text-2xl sm:text-3xl font-serif text-black font-normal">
               Provas Comentadas e Validação de Conhecimento

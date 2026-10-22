@@ -75,7 +75,7 @@ export function EngineeringSimulators() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#a2a9b1] pb-3">
         <div>
           <span className="text-[10px] font-mono uppercase text-[#54595d] font-bold block">
-            Wikipédia Técnica • Laboratório Computacional
+            Lopes Engenharia Book • Laboratório Computacional
           </span>
           <h1 className="text-2xl sm:text-3xl font-serif text-black font-normal">
             Calculadoras e Simuladores de Engenharia

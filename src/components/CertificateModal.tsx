@@ -14,7 +14,7 @@ export function CertificateModal({ progress, onClose }: CertificateModalProps) {
     year: 'numeric'
   });
 
-  const certificateHash = `WIKI-ENG-${Math.random().toString(36).substring(2, 9).toUpperCase()}-2026`;
+  const certificateHash = `LEB-ENG-${Math.random().toString(36).substring(2, 9).toUpperCase()}-2026`;
 
   const handlePrint = () => {
     window.print();
@@ -33,7 +33,7 @@ export function CertificateModal({ progress, onClose }: CertificateModalProps) {
               ✓
             </span>
             <h3 className="font-serif font-bold text-base text-black">
-              Emissão de Certificado do Tratado de Engenharia
+              Emissão de Certificado — Lopes Engenharia Book
             </h3>
           </div>
 
@@ -71,7 +71,7 @@ export function CertificateModal({ progress, onClose }: CertificateModalProps) {
             {/* Header */}
             <div className="space-y-1">
               <div className="text-[#4d861e] font-bold uppercase tracking-[0.25em] text-xs font-mono">
-                WIKIPÉDIA TÉCNICA • TRATADO DE FORMAÇÃO INTENSIVA
+                LOPES ENGENHARIA BOOK • MANUAL & TRATADO DE FORMAÇÃO INTENSIVA
               </div>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-black tracking-tight font-serif">
                 CERTIFICADO DE CAPACITAÇÃO PROFISSIONAL
@@ -93,7 +93,7 @@ export function CertificateModal({ progress, onClose }: CertificateModalProps) {
 
             {/* Description */}
             <p className="text-[#202122] text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
-              concluiu com aproveitamento integral a formação intensiva nos pilares de <strong className="text-black">Engenharia Ambiental e Monitorização</strong> (Parâmetros Físico-Químicos, EIA/RIMA, ISO 14001 e Legislação de Angola: Lei 5/98 e Dec. Presidencial 117/20) e <strong className="text-black">Engenharia Civil e Gestão de Obras</strong> (Plantas Estruturais, Cálculo de Vigas no ELU, BDI/Curva ABC, EVM, Agregados Reciclados RCD e Cruzamento Normativo Angola-Portugal-Brasil), com carga horária de:
+              concluiu com aproveitamento integral a formação intensiva do <strong className="text-black">Lopes Engenharia Book</strong> nos pilares de <strong className="text-black">Engenharia Ambiental e Monitorização</strong> (Parâmetros Físico-Químicos, EIA/RIMA, ISO 14001 e Legislação de Angola: Lei 5/98 e Dec. Presidencial 117/20) e <strong className="text-black">Engenharia Civil e Gestão de Obras</strong> (Plantas Estruturais, Cálculo de Vigas no ELU, BDI/Curva ABC, EVM, Agregados Reciclados RCD e Cruzamento Normativo Angola-Portugal-Brasil), com carga horária de:
             </p>
 
             {/* Hours and Grade */}
@@ -112,17 +112,19 @@ export function CertificateModal({ progress, onClose }: CertificateModalProps) {
             {/* Signatures and Validation */}
             <div className="pt-6 border-t border-[#eaecf0] grid grid-cols-1 sm:grid-cols-3 gap-6 items-end text-center">
               <div>
-                <div className="font-serif italic text-sm text-black">Coord. Acadêmica do Tratado</div>
-                <div className="w-36 h-0.5 bg-black mx-auto my-1" />
-                <span className="text-[10px] text-[#54595d] uppercase tracking-wider block font-mono">Conselho Técnico</span>
+                <div className="font-serif italic text-sm text-black font-bold">Coordenação Técnica do Tratado</div>
+                <div className="w-44 h-0.5 bg-black mx-auto my-1" />
+                <span className="text-[10px] text-[#54595d] uppercase tracking-wider block font-mono">
+                  Conselho Acadêmico & Normativo
+                </span>
               </div>
 
               {/* Seal Stamp */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full border-2 border-[#72c332] flex items-center justify-center text-black bg-[#f2f9ed] shadow-inner font-serif font-bold text-2xl">
-                  Ω
+                <div className="w-16 h-16 rounded-full border-2 border-[#72c332] flex items-center justify-center text-black bg-[#f2f9ed] shadow-inner font-serif font-bold text-xl">
+                  LEB
                 </div>
-                <span className="text-[9px] font-mono font-bold text-black mt-1">SELO WIKIPÉDIA ENG</span>
+                <span className="text-[9px] font-mono font-bold text-black mt-1">LOPES ENG BOOK</span>
               </div>
 
               <div>
